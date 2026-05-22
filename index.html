@@ -116,12 +116,39 @@ tailwind.config = {
 </section>
 
 <!-- STATS -->
-<section class="bg-white border-b border-forest-100">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-      <div class="reveal"><p class="text-4xl font-display font-black text-forest-500 metric-number">72%</p><p class="text-forest-700 text-sm mt-2">Des entreprises organisent des événements corporate</p></div>
-      <div class="reveal"><p class="text-4xl font-display font-black text-forest-500 metric-number">100%</p><p class="text-forest-700 text-sm mt-2">Écoresponsable</p></div>
-      <div class="reveal"><p class="text-4xl font-display font-black text-forest-500 metric-number">37%</p><p class="text-forest-700 text-sm mt-2">Taux de rentabilité moyen</p></div>
+<section class="relative bg-gradient-to-b from-forest-500 to-forest-700 py-20 md:py-28 overflow-hidden">
+  <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_50%,#fff_0%,transparent_60%)]"></div>
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="text-sand-300 font-semibold uppercase tracking-wider text-sm">Chiffres clés</span>
+      <h2 class="text-3xl sm:text-4xl font-display font-extrabold text-white mt-3 mb-4">Le marché nous donne raison</h2>
+      <p class="text-sand-200 max-w-xl mx-auto text-lg">Un secteur en pleine croissance, une demande forte pour des solutions responsables.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+      <!-- Stat 1 -->
+      <div class="reveal stat-card bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-10 border border-white/15 hover:border-sand-300/40 hover:bg-white/15 transition-all duration-500 text-center group">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-sand-300/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500">🏢</div>
+        <p class="text-6xl md:text-7xl font-display font-black text-white metric-number counter" data-target="72" data-suffix="%">0%</p>
+        <p class="text-sand-200 mt-4 text-lg font-medium">Des entreprises organisent</p>
+        <p class="text-sand-300 text-sm">des événements corporate chaque année</p>
+        <div class="mt-4 w-12 h-0.5 bg-sand-300/30 mx-auto rounded-full group-hover:w-20 transition-all duration-500"></div>
+      </div>
+      <!-- Stat 2 -->
+      <div class="reveal stat-card bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-10 border border-white/15 hover:border-sand-300/40 hover:bg-white/15 transition-all duration-500 text-center group">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-sand-300/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500">🌱</div>
+        <p class="text-6xl md:text-7xl font-display font-black text-white metric-number counter" data-target="100" data-suffix="%">0%</p>
+        <p class="text-sand-200 mt-4 text-lg font-medium">Écoresponsable</p>
+        <p class="text-sand-300 text-sm">Zéro plastique, circuits courts, mobilité douce</p>
+        <div class="mt-4 w-12 h-0.5 bg-sand-300/30 mx-auto rounded-full group-hover:w-20 transition-all duration-500"></div>
+      </div>
+      <!-- Stat 3 -->
+      <div class="reveal stat-card bg-white/10 backdrop-blur-md rounded-2xl p-8 md:p-10 border border-white/15 hover:border-sand-300/40 hover:bg-white/15 transition-all duration-500 text-center group">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-sand-300/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-500">📈</div>
+        <p class="text-6xl md:text-7xl font-display font-black text-white metric-number counter" data-target="37" data-suffix="%">0%</p>
+        <p class="text-sand-200 mt-4 text-lg font-medium">Taux de rentabilité</p>
+        <p class="text-sand-300 text-sm">moyen sur les prestations événementielles</p>
+        <div class="mt-4 w-12 h-0.5 bg-sand-300/30 mx-auto rounded-full group-hover:w-20 transition-all duration-500"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -286,6 +313,37 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
 }, { threshold: 0.15 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Counter animation
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.getAttribute('data-target'));
+      const suffix = el.getAttribute('data-suffix') || '';
+      const duration = 1800;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        // easeOutExpo
+        const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        const current = Math.round(eased * target);
+        el.textContent = current + suffix;
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+
+      el.textContent = '0' + suffix;
+      requestAnimationFrame(update);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.6 });
+
+document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
 
 // Devis
 function fillSummary() {
